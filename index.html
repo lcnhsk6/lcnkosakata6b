@@ -1,0 +1,1537 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HSK 6B Vocabulary</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .tab-button.active {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .vocab-table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .vocab-table th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .vocab-row {
+            transition: background-color 0.2s ease;
+        }
+        
+        .vocab-row:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app-container" class="h-full w-full overflow-auto">
+   <div class="min-h-full" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="max-w-7xl mx-auto px-4 py-8"><!-- Header -->
+     <div class="text-center mb-8">
+      <h1 id="main-title" class="text-5xl font-bold text-white mb-2">HSK 6B Vocabulary</h1>
+      <p class="text-xl text-white opacity-90">Kosakata HSK Level 6B</p>
+     </div><!-- Search Bar -->
+     <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-6 mb-6 shadow-2xl">
+      <div class="max-w-2xl mx-auto">
+       <div class="relative"><input type="text" id="search-input" placeholder="Cari karakter, pinyin, atau arti..." class="w-full px-6 py-4 pr-12 rounded-xl text-lg border-2 border-transparent focus:border-white focus:outline-none transition-all" style="background: rgba(255, 255, 255, 0.9);">
+        <svg class="absolute right-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+       </div>
+       <p id="search-results-count" class="text-white text-center mt-3 text-sm opacity-0 transition-opacity"></p>
+      </div>
+     </div><!-- Tabs -->
+     <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-6 mb-6 shadow-2xl">
+      <div class="flex flex-wrap gap-2 justify-center" id="tabs-container"><!-- Tabs will be generated here -->
+      </div>
+     </div><!-- Vocabulary Table -->
+     <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+      <div class="overflow-x-auto">
+       <div class="max-h-[600px] overflow-y-auto">
+        <table class="vocab-table w-full">
+         <thead>
+          <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+           <th id="col-number" class="px-6 py-4 text-left text-sm font-semibold text-white">No</th>
+           <th id="col-character" class="px-6 py-4 text-left text-sm font-semibold text-white">Character</th>
+           <th id="col-pinyin" class="px-6 py-4 text-left text-sm font-semibold text-white">Pinyin</th>
+           <th id="col-meaning" class="px-6 py-4 text-left text-sm font-semibold text-white">Arti</th>
+          </tr>
+         </thead>
+         <tbody id="vocab-tbody"><!-- Vocabulary rows will be generated here -->
+         </tbody>
+        </table>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+        const defaultConfig = {
+            app_title: "HSK 6B Vocabulary",
+            lesson_label: "Lesson",
+            column_number: "No",
+            column_character: "Character",
+            column_pinyin: "Pinyin",
+            column_meaning: "Arti",
+            background_color: "#667eea",
+            surface_color: "#ffffff",
+            text_color: "#1f2937",
+            primary_action_color: "#764ba2",
+            secondary_action_color: "#667eea",
+            font_family: "system-ui",
+            font_size: 16
+        };
+
+        let viewMode = 'individual';
+        let searchQuery = '';
+
+        const vocabData = {
+            21: [
+                ["急剧", "jíjù", "adj. cepat, tajam, tiba-tiba"],
+                ["川流不息", "chuānliú-bùxī", "datang dan pergi sepanjang waktu"],
+                ["登录", "dēnglù", "v. untuk masuk"],
+                ["指令", "zhǐlìng", "n. perintah, instruksi"],
+                ["根深蒂固", "gēnshēn-dìgù", "duduk dalam, mengakar, mendarah daging"],
+                ["不免", "bùmiǎn", "adv. tak terhindarkan"],
+                ["预言", "yùyán", "v. meramalkan"],
+                ["革命", "gémìng", "v. revolusi"],
+                ["改良", "gǎiliáng", "v. memperbaiki, mereformasi"],
+                ["欣欣向荣", "xīnxīn-xiàngróng", "berkembang, makmur"],
+                ["仓库", "cāngkù", "n. gudang"],
+                ["储备", "chǔbèi", "v. untuk menyimpan untuk penggunaan di masa depan"],
+                ["结算", "jiésuàn", "v. menyelesaikan akun, untuk menutup akun"],
+                ["模式", "móshì", "n. modus, pola"],
+                ["把手", "bǎshou", "n. menangani"],
+                ["装卸", "zhuāngxiè", "v. memuat dan membongkar"],
+                ["屏幕", "píngmù", "n. layar"],
+                ["相应", "xiāngyīng", "v. sesuai"],
+                ["仪器", "yíqì", "n. instrumen, peralatan"],
+                ["以免", "yǐmiǎn", "konj. Jangan-jangan, karena takut itu"],
+                ["嫌", "xián", "v. tidak suka, keberatan, mengeluh"],
+                ["腥", "xīng", "adj. memiliki bau ikan, makanan laut, dll"],
+                ["清理", "qīnglǐ", "v. membersihkan"],
+                ["等候", "děnghòu", "v. tunggu"],
+                ["性能", "xìngnéng", "n. fungsi (mesin, dll), kinerja"],
+                ["便利", "biànlì", "adj. nyaman"],
+                ["把关", "bǎguān", "n. untuk memeriksa"],
+                ["人工", "réngōng", "M. tenaga kerja"],
+                ["秤", "chèng", "n. timbangan"],
+                ["运算", "yùnsuàn", "v. menghitung"],
+                ["总和", "zǒnghé", "n. jumlah"],
+                ["着重", "zhuózhòng", "v. dengan tegas"],
+                ["虚拟", "xūnǐ", "adj. Maya"],
+                ["投票", "tóupiào", "v. suara"],
+                ["保管", "bǎoguǎn", "v. jaminan"],
+                ["新颖", "xīnyǐng", "adj. modis"],
+                ["羽绒服", "yǔróngfú", "n. jaket bawah"],
+                ["旗袍", "qípáo", "n. cheongsam, gaun wanita yang pas dengan leher tinggi dan rok slit"],
+                ["中意", "zhòngyì", "v. suka"],
+                ["音响", "yīnxiǎng", "n. stereo"],
+                ["收音机", "shōuyīnjī", "n. radio"],
+                ["水龙头", "shuǐlóngtóu", "n. kran air ledeng"],
+                ["枚", "méi", "M. bagian"],
+                ["纽扣儿", "niǔkòur", "n. tombol"],
+                ["插座", "chāzuò", "n. stopkontak"],
+                ["勘探", "kāntàn", "v. untuk prospek (sumber daya mineral)"],
+                ["矿产", "kuàngchǎn", "n. sumber daya mineral"],
+                ["反馈", "fǎnkuì", "v. memberikan umpan balik"],
+                ["款式", "kuǎnshì", "n. model, gaya, desain"],
+                ["关怀", "guānhuái", "v. untuk menunjukkan perhatian penuh kasih untuk"],
+                ["无微不至", "wúwēi-bùzhì", "dengan cermat, dengan segala cara yang memungkinkan"],
+                ["需求", "xūqiú", "n. permintaan, kebutuhan"],
+                ["主导", "zhǔdǎo", "n. memimpin"],
+                ["兴隆", "xīnglóng", "adj. makmur, berkembang, berkembang, cepat"]
+            ],
+            22: [
+                ["堵塞", "dǔsè", "v. menutupi, menyumpal"],
+                ["滞留", "zhìliú", "v. ditahan, dijebak"],
+                ["折磨", "zhémó", "v. penyiksaan"],
+                ["翼", "yì", "n. sayap"],
+                ["担保", "dānbǎo", "v. menjamin"],
+                ["大体", "dàtǐ", "adv. Kira-kira, kurang lebih, secara keseluruhan"],
+                ["勾画", "gōuhuà", "v. menggambar garis besar, membuat sketsa"],
+                ["轮廓", "lúnkuò", "n. garis besar"],
+                ["指责", "zhǐzé", "v. mencela, mengkritik"],
+                ["融化", "rónghuà", "v. mencair"],
+                ["石油", "shíyóu", "n. minyak bumi"],
+                ["事故", "shìgù", "n. kecelakaan"],
+                ["割", "gē", "v. potong, menyerah"],
+                ["优胜劣汰", "yōushèng liè tài", "kelangsungan hidup yang terkuat; untuk memilih yang superior dan menghilangkan yang inferior"],
+                ["皆", "jiē", "adv. Semua, masing-masing dan setiap"],
+                ["明智", "míngzhì", "adj. bijaksana, masuk akal"],
+                ["出路", "chūlù", "n. jalan keluar"],
+                ["规范", "guīfàn", "adj. standar, normatif"],
+                ["谋求", "móuqiú", "v. mencari, berusaha untuk"],
+                ["干预", "gānyù", "v. campur tangan"],
+                ["平坦", "píngtǎn", "adj. datar, halus, rata"],
+                ["奔驰", "bēnchí", "v. lari cepat, kecepatan"],
+                ["试图", "shìtú", "v. mencoba"],
+                ["引导", "yǐndǎo", "v. membimbing, memimpin"],
+                ["串", "chuàn", "M. rangkaian"],
+                ["珍珠", "zhēnzhū", "n. mutiara"],
+                ["效益", "xiàoyì", "n. efisiensi"],
+                ["抵达", "dǐdá", "v. tiba di, mencapai"],
+                ["终点", "zhōngdiǎn", "n. tujuan, titik terminal"],
+                ["配备", "pèibèi", "v. dilengkapi dengan"],
+                ["停泊", "tíngbó", "v.parkir"],
+                ["力求", "lìqiú", "v. melakukan segala upaya untuk, melakukan yang terbaik untuk, berusaha untuk"],
+                ["丙", "bǐng", "n. ketiga"],
+                ["融合", "rónghé", "v. mengintegrasikan"],
+                ["引擎", "yǐnqíng", "n. mesin"],
+                ["行列", "hángliè", "n. peringkat"],
+                ["潮流", "cháoliú", "n. tren, mode"],
+                ["助理", "zhùlǐ", "n. asisten"],
+                ["锦上添花", "jǐnshàng-tiānhuā", "tambahkan hal indah ke hal indah yang kontras, tambahkan kecemerlangan pada kemegahan saat ini"],
+                ["保障", "bǎozhàng", "v. jaminan"],
+                ["丁", "dīng", "n. keempat"],
+                ["柴油", "cháiyóu", "n. minyak diesel"],
+                ["遏制", "èzhì", "v. mengendalikan, mengekang"],
+                ["比重", "bǐzhòng", "n. proporsi"],
+                ["昂贵", "ángguì", "adj. mahal"],
+                ["阻碍", "zǔài", "v. merintangi, menghalangi"],
+                ["排除", "páichú", "v. mengecualikan, menghilangkan"],
+                ["确保", "quèbǎo", "v. memastikan, menjamin"],
+                ["排放", "páifàng", "v. pelepasan"],
+                ["代价", "dàijià", "n. biaya, harga"],
+                ["伴侣", "bànlǚ", "n. pendamping"],
+                ["支柱", "zhīzhù", "n. pilar, andalan"]
+            ],
+            23: [
+                ["通俗", "tōngsú", "adj. populer, biasa"],
+                ["堆积", "duījī", "v. menumpuk"],
+                ["卓越", "zhuóyuè", "adj. luar biasa, brilian"],
+                ["预测", "yùcè", "v. meramalkan"],
+                ["功劳", "gōngláo", "n. kredit, jasa (perbuatan), kontribusi"],
+                ["派遣", "paiqiǎn", "v. mengirim sb. Dalam misi, untuk dikirim"],
+                ["战略", "zhànlüè", "n. strategi"],
+                ["模型", "móxíng", "n. model"],
+                ["共计", "gòngjì", "v. menambahkan hingga"],
+                ["验证", "yànzhèng", "v. untuk menguji dan memverifikasi"],
+                ["万分", "wànfēn", "adv. Sangat"],
+                ["振奋", "zhènfèn", "adj. menginspirasi, menggairahkan"],
+                ["公认", "gōngrèn", "v. secara umum mengakui"],
+                ["扭转", "niǔzhuǎn", "v. membalikkan, memutar"],
+                ["先前", "xiānqián", "n. sebelumnya"],
+                ["陈旧", "chénjiù", "adj. ketinggalan zaman, usang"],
+                ["被动", "bèidòng", "adj. pasif"],
+                ["防治", "fángzhì", "v.mencegah dan menyembuhkan"],
+                ["消灭", "xiāomiè", "v. melenyapkan, membasmi"],
+                ["萌芽", "méngyá", "v. bertunas"],
+                ["荒谬", "huāngmiù", "adj. tidak masuk akal, konyol"],
+                ["前提", "qiántí", "n. prasyarat"],
+                ["交代", "jiāodài", "v. menjelaskan"],
+                ["追究", "zhuījiū", "v. menyelidiki"],
+                ["基因", "jīyīn", "n. gen"],
+                ["遗传", "yíchuán", "v. mewarisi"],
+                ["预料", "yùliào", "v. mengharapkan, mengantisipasi, meramalkan"],
+                ["消除", "xiāochú", "v. menghilangkan"],
+                ["隐患", "yǐnhuàn", "n. masalah tersembunyi, bahaya tersembunyi"],
+                ["预兆", "yùzhào", "n. tanda, pertanda"],
+                ["案例", "ànlì", "n. kasus"],
+                ["零星", "língxīng", "adj. berserakan"],
+                ["挽救", "wǎnjiù", "v. menyelamatkan"],
+                ["细致", "xìzhì", "adj. teliti, hati-hati"],
+                ["不言而喻", "bùyán-éryù", "menjadi jelas, dipahami tanpa diberitahu, tak perlu dikatakan bahwa"],
+                ["血压", "xuèyā", "n. tekanan darah (TD)"],
+                ["先进", "xiānjìn", "adj. canggih, mutakhir"],
+                ["器材", "qìcái", "n. peralatan"],
+                ["人为", "rénwéi", "adj. buatan, buatan manusia"],
+                ["前景", "qiánjǐng", "n. prospek, pandangan"],
+                ["临床", "línchuáng", "v. klinis"],
+                ["依赖", "yīlài", "v. bergantung pada"],
+                ["切切实实", "qièqiè shí shí", "nyata"],
+                ["切实", "qiè shí", "adj. praktis layak"],
+                ["优越", "yōuyuè", "adj. unggul"],
+                ["维护", "wéihù", "v. memelihara"],
+                ["协助", "xiézhù", "v. membantu"],
+                ["生理", "shēnglǐ", "n. fisiologi"],
+                ["攒", "zǎn", "v. menyimpan, mengumpulkan"],
+                ["可行", "kěxíng", "adj. layak, dapat diterapkan, dapat dilaksanakan"],
+                ["实事求是", "shíshì-qiúshì", "untuk mencari kebenaran dari fakta"],
+                ["展望", "zhǎnwàng", "v. meramalkan, melihat ke kejauhan"]
+            ],
+            24: [
+                ["离奇", "líqí", "adj.aneh, ganjil"],
+                ["崇拜", "chóngbài", "v. memuja, mengagumi"],
+                ["冲击", "chōngjī", "v. menantang, pergi untuk"],
+                ["拼搏", "pīnbó", "v. berjuang, berperang"],
+                ["聚精会神", "jùjīng-huìshén", "memusatkan perhatian (dan energi) seseorang pada"],
+                ["防守", "fángshǒu", "v. membela"],
+                ["火箭", "huǒjiàn", "n. roket"],
+                ["横", "héng", "adj. ke samping"],
+                ["进攻", "jìngōng", "v. menyerang"],
+                ["阴谋", "yīnmóu", "n. plot, konspirasi"],
+                ["当场", "dāngchǎng", "adj. di tempat, saat itu juga"],
+                ["事件", "shìjiàn", "n. peristiwa, kejadian"],
+                ["遮挡", "zhēdǎng", "v. berlindung dari, menjaga keluar"],
+                ["裁判", "cáipàn", "n. wasit"],
+                ["中断", "zhōngduàn", "v. mengganggu"],
+                ["刹车", "shāchē", "v. mengerem, berhenti"],
+                ["防御", "fángyù", "v. membela"],
+                ["心态", "xīn tài", "n. sikap, keadaan mental"],
+                ["南辕北辙", "nányuán-běizhé", "pergi ke selatan dengan mengendarai kereta ke utara-- untuk bertindak dengan cara yang mengalahkan tujuan seseorang"],
+                ["注重", "zhùzhòng", "v. memberi tekanan pada, memperhatikan"],
+                ["胜负", "shèngfù", "n. menang atau kalah, sukses atau gagal"],
+                ["残酷", "cánkù", "adj. kejam, brutal"],
+                ["争议", "zhēngyì", "v. berselisih"],
+                ["打仗", "dǎzhàng", "v. berperang"],
+                ["打官司", "dǎ guānsi", "mengadili, pergi ke hukum"],
+                ["守护", "shǒuhù", "v. menjaga, mengawasi"],
+                ["谴责", "qiǎnzé", "v. menyalahkan, mengutuk, mencela"],
+                ["凶手", "xiōng shǒu", "n. pembunuh"],
+                ["冤枉", "yuānwang", "v. salah sb. (dengan tuduhan palsu, dll), untuk memperlakukan secara tidak adil"],
+                ["辩解", "biànjiě", "v. membenarkan, mencoba membela diri"],
+                ["成心", "chéngxīn", "adv. Sengaja, dengan sengaja"],
+                ["意料", "yì liào", "v. mengharapkan"],
+                ["频繁", "pínfán", "adj sering"],
+                ["航空", "hángkōng", "v. penerbangan"],
+                ["大意", "dàyì", "adj. ceroboh"],
+                ["悲哀", "bēi'āi", "adj. sedih"],
+                ["主办", "zhǔbàn", "v. menjadi tuan rumah, mensponsori"],
+                ["特意", "tèyì", "adj. tujuan spesial, khususnya"],
+                ["警告", "jǐnggào", "v. memperingatkan"],
+                ["疏忽", "shūhu", "v. mengabaikan, mengabaikan"],
+                ["重心", "zhòngxīn", "n. Pusat gravitasi"],
+                ["熨", "yùn", "v. menyetrika"],
+                ["磕", "kē", "v. mengetuk, memukul"],
+                ["嘴唇", "zuǐ chún", "n. bibir"],
+                ["拽", "zhuài", "v. menyeret, menarik"],
+                ["乐极生悲", "lèjí-shēngbēi", "Kegembiraan yang luar biasa menghasilkan kesedihan, setelah kegembiraan datang kesedihan"],
+                ["恼火", "nǎohuǒ", "adj. kesal"],
+                ["雪上加霜", "xuěshàng-jiāshuāng", "salju ditambah embun beku -- bencana demi bencana, menambah kemalangan orang yang sudah malang"],
+                ["荒唐", "huāngtáng", "adj. tidak masuk akal, konyol"],
+                ["指甲", "zhǐjia", "n. kuku jari"],
+                ["处置", "chǔzhì", "v. menangani, mengelola"],
+                ["电钻", "diàn zuān", "bor listrik"],
+                ["遭受", "zāoshòu", "v. menderita, menjalani"],
+                ["微不足道", "wēibù-zúdào", "tidak penting, diabaikan"]
+            ],
+            25: [
+                ["服气", "fúqì", "v. diyakinkan"],
+                ["军队", "jūnduì", "n. tentara, pasukan"],
+                ["武器", "wǔqì", "n. senjata, senjata"],
+                ["当务之急", "dāngwù-zhījí", "prioritas utama"],
+                ["承办", "chéngbàn", "v. melakukan"],
+                ["委托", "wěituō", "v. mempercayakan, mengizinkan"],
+                ["即将", "jíjiāng", "adv. Untuk menjadi, berada di titik; segera"],
+                ["紧迫", "jǐnpò", "adj. mendesak, segera"],
+                ["公务", "gōngwù", "n. urusan publik, bisnis resmi"],
+                ["款待", "kuǎndài", "v. Perlakukan dengan ramah, hibur dengan sopan dan kehangatan"],
+                ["叮嘱", "dīngzhǔ", "v. mendesak lagi dan lagi, berulang kali menasihati"],
+                ["算数", "suànshù", "v. menghitung, menahan, berdiri"],
+                ["逼迫", "bīpò", "v. memaksa"],
+                ["吩咐", "fēnfù", "v. menginstruksikan, memerintahkan"],
+                ["下属", "xiàshǔ", "n. bawahan"],
+                ["充足", "chōngzú", "adj. cukup, memadai"],
+                ["拖延", "tuōyán", "v. menunda"],
+                ["期限", "qīxiàn", "n. tenggat waktu"],
+                ["活该", "huógāi", "v. layak, melayani sb. Benar"],
+                ["探听", "tàntīng", "v. membuat pertanyaan, mengintip"],
+                ["汇报", "huìbào", "v. laporkan, beri pertanggung jawaban"],
+                ["探望", "tànwàng", "v. mengunjungi, menelepon"],
+                ["寒暄", "hánxuān", "v. bertukar salam konvensional"],
+                ["为难", "wéinán", "v. mempermalukan, mempersulit"],
+                ["严密", "yánmì", "adj. rapat"],
+                ["侧面", "cèmiàn", "n. samping"],
+                ["机密", "jīmì", "n. rahasia"],
+                ["保密", "bǎomì", "v. menjaga kerahasiaan, menjaga sth. Rahasia"],
+                ["走漏", "zǒu lòu", "v. membocorkan"],
+                ["沉思", "chénsī", "v. merenungkan, bermeditasi, tenggelam dalam pikiran"],
+                ["意图", "yìtú", "n. niat, tujuan"],
+                ["私自", "sīzì", "adv. Secara pribadi"],
+                ["妥当", "tuǒdāng", "adj. dengan tepat, dengan benar"],
+                ["占领", "zhànlǐng", "v. menduduki, menaklukkan"],
+                ["封锁", "fēngsuǒ", "v. blok, tutup rapat"],
+                ["驻扎", "zhùzhā", "v. ditempatkan, berempat"],
+                ["指定", "zhǐdìng", "v. menunjuk, menugaskan"],
+                ["响亮", "xiǎngliàng", "adj. keras dan jelas, bergema"],
+                ["舱", "cāng", "n. kabin"],
+                ["嘱咐", "zhǔfù", "v. menginstruksikan, memerintahkan"],
+                ["茫茫", "mángmáng", "adj. tak terbatas dan tidak jelas, luas"],
+                ["调动", "diàodòng", "v. pengalihan, memindahkan"],
+                ["一齐", "yìqí", "ad. Pada waktu bersamaan, secara bersamaan"],
+                ["方位", "fāngwèi", "n. arah"],
+                ["高涨", "gāozhǎng", "adj. (dalam semangat yang tinggi)"],
+                ["凌晨", "língchén", "n. sebelum fajar, menjelang dini hari"],
+                ["笼罩", "lǒngzhào", "v. menyelubungi, menyelimuti"],
+                ["启程", "qǐchéng", "v. berangkat, memulai perjalanan"],
+                ["大致", "dàzhì", "adv. Kira-kira"],
+                ["圆满", "yuánmǎn", "adj. memuaskan, sempurna"],
+                ["叹气", "tànqì", "v. mendesah"],
+                ["天才", "tiāncái", "n. jenius"],
+                ["高明", "gāomíng", "adj. brilian, bijaksana, cerah"]
+            ],
+            26: [
+                ["捧", "pěng", "v. memegang dengan kedua tangan"],
+                ["天文", "tiānwén", "n. astronomi"],
+                ["儒家", "rújiā", "n. Konfusianisme"],
+                ["传记", "zhuànjì", "n. biografi"],
+                ["散文", "sǎnwén", "n. prosa"],
+                ["历代", "lìdài", "n. dinasti berturut-turut, sepanjang zaman, di segala zaman"],
+                ["着迷", "zháomí", "v. terpesona, terpikat"],
+                ["熏陶", "xūntáo", "v. memelihara, membina"],
+                ["胸怀", "xiōnghuái", "n. pikiran, hati"],
+                ["不堪", "bùkān", "v. tidak tahan"],
+                ["炎热", "yán rè", "adj. terik, panas membara"],
+                ["骚扰", "sāorǎo", "v. melecehkan"],
+                ["贫乏", "pínfá", "adj. miskin"],
+                ["艰难", "jiānnán", "adj. sulit"],
+                ["蜡烛", "làzhú", "n. lilin"],
+                ["蚂蚁", "mǎyǐ", "n. semut"],
+                ["颈椎", "jǐngzhuī", "n. （fisiologi) ruas tulang leher"],
+                ["揉", "róu", "v. menggosok"],
+                ["挪", "nuó", "v. bergerak, menggeser"],
+                ["屁股", "pìgǔ", "n. pantat, bokong"],
+                ["知觉", "zhījué", "n. kesadaran, estetika"],
+                ["挨", "āi", "v. menderita, menanggung"],
+                ["美满", "měimǎn", "adj. senang, sempurna, memuaskan"],
+                ["天堂", "tiāntáng", "n. surga"],
+                ["熄灭", "xīmiè", "v. memadamkan"],
+                ["泄气", "xiè qì", "v. putus asa, menjadi frustrasi"],
+                ["眯", "mī", "v. menyipitkan mata"],
+                ["绝望", "juéwàng", "v. putus asa"],
+                ["凝固", "nínggù", "v. memadatkan, membekukan"],
+                ["蔓延", "mànyán", "v. menyebar"],
+                ["克制", "kèzhì", "v. menahan (diri)"],
+                ["默默", "mòmò", "adv. Diam-diam"],
+                ["背诵", "bèisòng", "v. untuk membaca, untuk mengulang dari memori"],
+                ["编织", "biānzhī", "v. menenun"],
+                ["强制", "qiángzhì", "v. memaksa"],
+                ["田野", "tiányě", "n. lapangan, negara terbuka"],
+                ["情形", "qíngxíng", "n. situasi, keadaan"],
+                ["耀眼", "yàoyǎn", "adj. mempesona"],
+                ["光芒", "guāngmáng", "n. sinar cahaya"],
+                ["劳", "láo", "v. menyeret untuk, meraup"],
+                ["摊", "tān", "v. menyebar"],
+                ["哇", "wa", "bagian. Wow"],
+                ["毫米", "háomǐ", "M. pembatas (mm)"],
+                ["迸发", "bèngfā", "v. meledak, meledak"],
+                ["兜", "dōu", "n. saku, tas"],
+                ["灯笼", "dēnglóng", "n. lentera"],
+                ["啦", "lā", "bagian. Suara yang mengekspresikan seruan atau interogasi"],
+                ["天赋", "tiānfù", "n. bakat, hadiah"],
+                ["贫困", "pínkùn", "adj. miskin"],
+                ["财富", "cáifù", "n. kekayaan, keberuntungan"],
+                ["源泉", "yuánquán", "n. sumber"]
+            ],
+            27: [
+                ["玉", "yù", "n. giok"],
+                ["答复", "dáfù", "v. membalas"],
+                ["得罪", "dézuì", "v. menyinggung, tidak menyenangkan"],
+                ["大臣", "dàchén", "n. menteri (dari monarki)"],
+                ["对策", "duìcè", "n. penanggulangan, tindakan balasan"],
+                ["提议", "tíyì", "v. mengusulkan, menyarankan"],
+                ["请教", "qǐngjiào", "v. meminta nasihat, berkonsultasi"],
+                ["实力", "shílì", "n. kecakapan, kekuatan sebenarnya"],
+                ["慷慨", "kāngkǎi", "adj. dermawan"],
+                ["亏待", "kuīdài", "v. memperlakukan secara tidak adil, memperlakukan dengan buruk"],
+                ["动身", "dòngshēn", "v. berangkat, berangkat"],
+                ["磋商", "cuōshāng", "v. berkonsultasi, bernegosiasi"],
+                ["荣幸", "róngxìng", "adj. terhormat, istimewa"],
+                ["转达", "zhuǎndá", "v. menyampaikan, menyampaikan"],
+                ["爱不释手", "àibú-shìshǒu", "untuk menyukai / mencintai st. Sedemikian rupa sehingga seseorang tidak tahan untuk berpisah dengannya"],
+                ["拳套", "quán tào", "n. perangkap, jerat"],
+                ["归还", "guīhuán", "v. mengembalikan, memberi kembali"],
+                ["从容", "cóngróng", "adj. tenang, santai"],
+                ["中央", "zhōngyāng", "n. tengah"],
+                ["兑现", "duìxiàn", "v. memenuhi"],
+                ["妄想", "wàngxiǎng", "n. khayalan"],
+                ["发誓", "fāshì", "v. bersumpah"],
+                ["尸体", "shītǐ", "n. mayat"],
+                ["撒谎", "sāhuǎng", "v. berbohong"],
+                ["隆重", "lóngzhòng", "adj. agung, khusyuk"],
+                ["仪式", "yíshì", "n. upacara"],
+                ["沐浴", "mùyù", "v. mandi"],
+                ["荤", "hūn", "n. daging atau ikan"],
+                ["庄严", "zhuāngyán", "adj. bermartabat, khusyuk"],
+                ["无理取闹", "wúlǐ-qǔnào", "untuk membuat masalah dari ketiadaan"],
+                ["冒犯", "màofàn", "v. menyinggung, menghina"],
+                ["亦", "yì", "adv. Juga"],
+                ["边境", "biānjìng", "n. perbatasan"],
+                ["泄露", "xièlù", "v. membocorkan, mengungkapkan"],
+                ["率领", "shuàilǐng", "v. memimpin, memerintah"],
+                ["镇静", "zhènjìng", "adj. tenang"],
+                ["雄厚", "xióng hòu", "adj. berlimpah, padat, luar biasa"],
+                ["一贯", "yíguàn", "adj. konsisten, selalu"],
+                ["霸道", "bàdào", "adj. sombong, mendominasi"],
+                ["声誉", "shēngyù", "n. reputasi, ketenaran, prestise"],
+                ["列举", "lièjǔ", "v. daftar, menghitung"],
+                ["履行", "lǚxíng", "v. melaksanakan, memenuhi"],
+                ["歪曲", "wāiqǔ", "v. mendistorsi, salah mengartikan, memelintir"],
+                ["理直气壮", "lǐzhí-qìzhuàng", "menjadi benar dan percaya diri"],
+                ["压迫", "yā pò", "v. menindas"],
+                ["口头", "kǒutóu", "adj. lisan"],
+                ["副", "fù", "M. (digunakan untuk menunjukkan ekspresi wajah) udara, lihat"],
+                ["姿态", "zītài", "n. sikap, postur"],
+                ["隔阂", "géhé", "n. keterasingan, kesalahpahaman"],
+                ["争端", "zhēngduān", "n. perselisihan, konflik"]
+            ],
+            28: [
+                ["领会", "lǐnghuì", "v. memahami"],
+                ["内涵", "nèihán", "n. arti, konotasi"],
+                ["港湾", "gǎngwān", "n. pelabuhan"],
+                ["晴朗", "qínglǎng", "adj. cerah, halus dan tak berawan"],
+                ["清澈", "qīngchè", "adj. jernih"],
+                ["出神", "chūshén", "v. terserap dalam, tenggelam dalam pikiran"],
+                ["弦", "xián", "n. string (alat musik)"],
+                ["美妙", "měimiào", "adj. indah, fantastis"],
+                ["砍伐", "kǎnfá", "v. menebang"],
+                ["平凡", "píngfán", "adj. biasa"],
+                ["乐谱", "yuèpǔ", "n. sakit musik"],
+                ["赞叹", "zàntàn", "v. mengagumi, sangat memuji"],
+                ["创作", "chuàngzuò", "v. mengarang, menulis"],
+                ["民间", "mínjiān", "n. rakyat, di antara rakyat"],
+                ["精通", "jīngtōng", "v. menguasai, mahir dalam"],
+                ["难能可贵", "nánnéng-kěguì", "terpuji untuk perilaku yang sangat baik, langka dan terpuji"],
+                ["应邀", "yīngyāo", "v. atas undangan sb."],
+                ["钦佩", "qīnpèi", "v. mengagumi, menghormati, menganggap tinggi"],
+                ["演奏", "yǎnzòu", "v. memainkan (instrumen), memberikan pertunjukan instrumental"],
+                ["豪迈", "háomài", "adj. berani dan murah hati, heroik"],
+                ["旋律", "xuánlǜ", "n. melodi"],
+                ["雄伟", "xióngwěi", "adj. megah, agung"],
+                ["壮观", "zhuànggūan", "adj. spektakuler"],
+                ["气势", "qìshì", "n. momentum"],
+                ["气魄", "qìpò", "n. keberanian, semangat"],
+                ["曲折", "qūzhé", "adj. berliku-liku, berliku"],
+                ["节奏", "jiézòu", "n. irama"],
+                ["短促", "duǎncù", "adj. pendek. Singkat"],
+                ["波涛", "bōtāo", "n. ombak besar"],
+                ["溅", "jiàn", "v. memercikkan"],
+                ["气概", "qìgài", "n. semangat, keberanian"],
+                ["含义", "hányì", "n. arti, implikasi"],
+                ["荒凉", "huāngliáng", "adj. terpencil, liar"],
+                ["领悟", "lǐngwù", "v. memahami, menyadari"],
+                ["侃侃而谈", "kǎnkǎn-értán", "untuk berbicara dengan semangat dan kepastian"],
+                ["投机", "tóujī", "adj. menyenangkan"],
+                ["黎明", "lí míng", "n. Fajar"],
+                ["告辞", "gàocí", "v. mengambil cuti"],
+                ["黄昏", "huánghūn", "n. senja"],
+                ["降临", "jiànglín", "v. turun, menimpa"],
+                ["沮丧", "jǔsàng", "adj. kecewa, tertekan"],
+                ["变故", "biàngù", "n. kecelakaan, kejadian tak terduga"],
+                ["逝世", "shìshì", "v. meninggal"],
+                ["坟墓", "fénmù", "n. kuburan, makam"],
+                ["不止", "bùzhǐ", "v. tak henti-hentinya"],
+                ["粉碎", "fěnsuì", "adj. untuk menghancurkan"],
+                ["向来", "xiànglái", "adv. Selalu, selama ini"],
+                ["凄凉", "qīliáng", "adj. sedih, tidak bisa ditebak"],
+                ["深情厚谊", "shēnqíng-hòuyì", "sentimen persahabatan yang mendalam, persahabatan yang mendalam"],
+                ["真挚", "zhēnzhì", "adj. jujur"],
+                ["纯洁", "chúnjié", "adj. murni"]
+            ],
+            29: [
+                ["备忘录", "bèiwànglù", "n. nota"],
+                ["岂有此理", "qǐyǒu-cǐlǐ", "betapa tidak masuk akal!"],
+                ["庸俗", "yōng sú", "adj. vulgar"],
+                ["档次", "dàngcì", "n. tingkat"],
+                ["诸位", "zhūwèi", "pron. Semua orang"],
+                ["难堪", "nánkān", "adj. malu"],
+                ["虚伪", "xū wěi", "adj. munafik"],
+                ["违背", "wéibèi", "v. melanggar, melawan"],
+                ["回避", "huíbì", "v. menghindari"],
+                ["岔", "chà", "v. mengganti topik atau pokok pembicaraan"],
+                ["装聋装哑", "zhuāng lóng zhuāng yǎ", "berpura-pura tuli dan bisu, berpura-pura tidak tahu apa-apa."],
+                ["画蛇添足", "huàshé-tiānzú", "adj. tuli dan bisu"],
+                ["机灵", "jīlíng", "melukis ular dengan kaki-berlebihan"],
+                ["周密", "zhōumì", "adj. hati2, teliti"],
+                ["途径", "tújìng", "n. cara, pendekatan"],
+                ["虚假", "xūjiǎ", "adj. palsu, menipu"],
+                ["特定", "tèdìng", "adj. spesifik"],
+                ["缘故", "yuán gù", "n. alasan, penyebab"],
+                ["意向", "yìxiàng", "n. niat, tujuan"],
+                ["诚挚", "chéngzhì", "adj. jujur"],
+                ["一丝不苟", "yìsī-bùgǒu", "untuk berhati-hati tentang setiap detail"],
+                ["倾听", "qīngtīng", "v. mendengarkan dengan penuh perhatian"],
+                ["视频", "shìpín", "n. video"],
+                ["一目了然", "yímù-liǎorán", "untuk menjadi jelas dalam sekejap"],
+                ["预先", "yùxiān", "adj. sebelumnya"],
+                ["知觉", "zhījué", "n. intuisi"],
+                ["探测", "tàncè", "v. mendeteksi"],
+                ["智商", "zhìshāng", "n. intelijen"],
+                ["提炼", "tíliàn", "v. memurnikan, mengekstraksi"],
+                ["相声", "xiàngsheng", "n. dialog jenaka"],
+                ["座右铭", "zuòyòumíng", "n. moto"],
+                ["通用", "tōngyòng", "v. menjadi umum digunakan, menjadi universal"],
+                ["调节", "tiáojié", "v. mengatur"],
+                ["循环", "xúnhuán", "v. beredar"],
+                ["收缩", "shōusuō", "v. menyusut"],
+                ["氧气", "yǎng qì", "n. oksigen"],
+                ["桨", "jiǎng", "n. mendayung"],
+                ["试验", "shìyàn", "v. istirahat, melakukan percobaan"],
+                ["脂肪", "zhī fáng", "n. gemuk"],
+                ["动脉", "dòngmài", "n. pembuluh darah"],
+                ["实质", "shízhì", "n. esensi, substansi"],
+                ["肆无忌惮", "sìwú-jìdàn", "untuk bertindak sembrono dan tidak peduli pada siapa pun, untuk bertindak keterlaluan"],
+                ["损坏", "sǔnhuài", "v. merusak"],
+                ["倾向", "qīngxiàng", "v. mengakhiri, cenderung ke"],
+                ["分寸", "fēncùn", "n. batas yang tepat untuk ucapan atau tindakan"],
+                ["恰到好处", "qiàdào-hǎochù", "untuk menjadi sempurna, to the point"],
+                ["是非", "shìfēi", "n. Benar dan salah"],
+                ["探讨", "tàntǎo", "v. berdiskusi"],
+                ["收益", "shōuyì", "n. untung"],
+                ["起哄", "qǐhòng", "v. membuat keributan"],
+                ["斟酌", "zhēnzhuó", "v. mempertimbangkan, memikirkan"],
+                ["恰当", "qiàdàng", "adj. sesuai, tepat"]
+            ],
+            30: [
+                ["惯例", "guànlì", "n.rutin"],
+                ["顽固", "wángù", "adj. keras kepala"],
+                ["奢侈", "shēchǐ", "adj. mewah"],
+                ["指数", "zhǐshù", "n. indeks"],
+                ["居民", "jūmín", "n. penduduk"],
+                ["当前", "dāngqián", "n. saat ini"],
+                ["扰乱", "rǎoluàn", "v. mengganggu"],
+                ["摧残", "cuīcán", "v. merusak"],
+                ["普及", "pǔjí", "v. mempopulerkan"],
+                ["盛行", "shèngxíng", "v. menang"],
+                ["过瘾", "guòyǐn", "adj. memuaskan keinginan"],
+                ["分泌", "fēnmì", "v. mengeluarkan"],
+                ["职能", "zhínéng", "n. fungsi"],
+                ["衰老", "shuāilǎo", "adj. penuaan"],
+                ["调剂", "tiáojì", "v. mengatur"],
+                ["细胞", "xìbāo", "n. sel"],
+                ["肿瘤", "zhǒngliú", "n. tumor"],
+                ["癌症", "áizhèng", "n. kanker"],
+                ["供不应求", "gōngbù-yìngqiú", "pasokan tidak cukup untuk permintaan"],
+                ["枕头", "zhěn tou", "n. bantal"],
+                ["折腾", "zhēteng", "v. untuk berbalik dari sisi ke sisi, untuk melemparkan tentang"],
+                ["容忍", "róngrěn", "v. menanggung, menoleransi"],
+                ["蹬", "dēng", "v. menendang"],
+                ["拳头", "quántou", "n. tinju"],
+                ["不时", "bùshí", "adv. Dari waktu ke waktu"],
+                ["气色", "qìsè", "n. kulit, lihat"],
+                ["轨道", "guǐdào", "n. trek, rel"],
+                ["酒精", "jiǔjīng", "n. alkohol"],
+                ["不相上下", "bùxiāng-shàngxià", "sama-sama cocok"],
+                ["适宜", "shìyí", "adj. cocok, sesuai"],
+                ["场合", "chǎnghé", "n. kesempatan, situasi"],
+                ["逆行", "nìxíng", "v. (kendaraan) untuk pergi ke arah yang tidak diperbolehkan oleh peraturan lalu lintas"],
+                ["茫然", "mángrán", "adj. kosong"],
+                ["丢三落四", "diūsān-làsì", "menjadi pelupa,merindukan ini dan itu"],
+                ["起伏", "qǐfú", "v. naik turun"],
+                ["发呆", "fādāi", "v. menatap kosong"],
+                ["记性", "jìxìng", "n. Penyimpanan"],
+                ["地步", "dìbù", "n. situasi, titik"],
+                ["混乱", "hùnluàn", "adj. dalam kekacauan, bingung, tidak teratur"],
+                ["恶化", "èhuà", "v. memburuk"],
+                ["慢性", "mànxìng", "adj. kronis"],
+                ["总而言之", "zǒngér-yánzhī", "secara keseluruhan, singkatnya"],
+                ["举足轻重", "jǔzú-qīngzhòng", "memainkan penentu"],
+                ["呼吁", "hūyù", "v. untuk mengajukan banding, untuk memanggil"],
+                ["无动于衷", "wúdòng-yúzhōng", "tidak tergerak, acuh tak acuh"],
+                ["竭尽全力", "jiéjìn-quánlì", "untuk menegangkan setiap saraf, untuk mencoba yang terbaik"],
+                ["根源", "gēnyuán", "n. akar masalah"],
+                ["对付", "duìfù", "v. menangani"],
+                ["纠正", "jiūzhèng", "v. mengoreksi"],
+                ["糟蹋", "zāota", "v. menyia-nyiakan, merusak"],
+                ["迫害", "pòhài", "v. menganiaya, menindas dengan kejam"],
+                ["毁灭", "huǐmiè", "v. menghancurkan"]
+            ],
+            31: [
+                ["忠实", "zhōngshí", "adj. loyal"],
+                ["不敢当", "bùgǎndāng", "v. tersanjung"],
+                ["走廊", "zǒuláng", "n. koridor"],
+                ["徒弟", "túdi", "n. anak magang"],
+                ["气功", "qìgōng", "n. qigong, sistem latihan pernapasan dalam"],
+                ["剑", "jiàn", "n. pedang"],
+                ["哦", "ò", "int. oh, ah"],
+                ["协会", "xiéhuì", "n. asosiasi, klub"],
+                ["爆发", "bàofā", "v. meledak"],
+                ["劈", "pī", "v. memotong, membelah"],
+                ["误解", "wùjiě", "v. salah paham"],
+                ["群众", "qúnzhòng", "n. orang banyak, masyarakat umum"],
+                ["逐年", "zhúnián", "adv. Tahun demi tahun"],
+                ["要素", "yàosù", "n. elemen"],
+                ["智力", "zhìlì", "n. intelijen"],
+                ["预期", "yùqī", "v. mengharapkan, mengantisipasi"],
+                ["首要", "shǒuyào", "adj. pertama, yang penting pertama"],
+                ["生锈", "shēngxiù", "v. menjadi berkarat"],
+                ["放射", "fàngshè", "v. memancarkan"],
+                ["夫人", "fūrén", "n. istri"],
+                ["端端正正", "duānduān-zhèngzhèng", "lurus, teratur (fitur)"],
+                ["潜力", "qiánlì", "n. potensi"],
+                ["衰退", "shuāituì", "v. menurun, melakukan pembusukan"],
+                ["著作", "zhùzuò", "n. karya, tulisan"],
+                ["反射", "fǎnshè", "v. mencerminkan"],
+                ["弱点", "ruòdiǎn", "n. kelemahan"],
+                ["迁就", "qiānjiù", "v. mengakomodasi diri sendiri untuk , menyerah pada"],
+                ["坚定", "jiāndìng", "adj. perusahaan"],
+                ["坚韧", "jiānrèn", "adj. tangguh dan tarik"],
+                ["狠心", "hěnxīn", "n. tidak berperasaan, berhati kejam"],
+                ["半途而废", "bàntú-érfèi", "menyerah di tengah jalan"],
+                ["虐待", "nüèdài", "v. menganiaya, menyalahgunakan"],
+                ["落实", "luòshí", "v.melaksanakan, memenuhi"],
+                ["归根到底", "guīgēn-dàodǐ", "dalam analisis akhir/terakhir"],
+                ["胡乱", "húluàn", "adv. Dengan ceroboh, dengan santai"],
+                ["间接", "jiànjiē", "adj. tidak langsung"],
+                ["品行", "pǐnxíng", "n. perilaku"],
+                ["紫外线", "zǐwàixiàn", "n. sinar ultraviolet"],
+                ["消毒", "xiāo dú", "v. mendisinfeksi"],
+                ["钙", "gài", "n. kalsium"],
+                ["二氧化碳", "èr yǎng huà tàn", "n. karbon dioksida"],
+                ["舒畅", "shūchàng", "adj. bahagia, sepenuhnya bebas dari kekhawatiran"],
+                ["宣扬", "xuānyáng", "v. beriklan"],
+                ["孔", "kǒng", "n. lubang"],
+                ["循序渐进", "xúnxù-jiànjìn", "langkah bu langkah"],
+                ["急于求成", "jíyú-qiúchéng", "menjadi cemas untuk sukses"],
+                ["剧烈", "jùliè", "adj. intens"],
+                ["幅度", "fúdù", "n. jangkauan"]
+            ],
+            32: [
+                ["背叛", "bèipàn", "v. mengkhianati"],
+                ["上进", "shàngjìn", "v. memotivasi diri sendiri"],
+                ["抱负", "bàofù", "n. ambisi, aspirasi"],
+                ["魄力", "pòlì", "n. berani dan resolusi, keberanian"],
+                ["开阔", "kāikuò", "adj. terbuka, luas"],
+                ["处境", "chǔjìng", "n. situasi, posisi"],
+                ["打击", "dǎjī", "v. memukul, menyerang"],
+                ["脆弱", "cuìruò", "adj. lemah"],
+                ["榜样", "bǎngyàng", "n. contoh, model"],
+                ["光彩", "guāngcǎi", "n. mempesona"],
+                ["理智", "lǐzhì", "adj. rasional, masuk akal"],
+                ["哭泣", "kūqì", "v. menangis, terisak"],
+                ["否决", "fǒujué", "v memveto, menolak"],
+                ["出息", "chūxi", "n. prospek, masa depan cerah"],
+                ["娃娃", "wáwa", "n. bayi, anak"],
+                ["潜移默化", "qiányí-mòhuà", "mempengaruhi tanpa terasa"],
+                ["鞭策", "biāncè", "v. mendorong, mendesak"],
+                ["赋予", "fùyǔ", "v. memberi, mempercayakan"],
+                ["扮演", "bànyǎn", "v. bertindak, memainkan bagian dari"],
+                ["鄙视", "bǐshì", "v. menghina, meremehkan"],
+                ["讥笑", "jīxiào", "v. menertawakan, mencemooh"],
+                ["恶心", "ěxin", "adj. menjijikkan"],
+                ["体面", "tǐmiàn", "adj. terhormat, layak"],
+                ["含糊", "hánhú", "adj. samar-samar, ambigu"],
+                ["束缚", "shùfù", "v. mengikat"],
+                ["魔鬼", "móguǐ", "n. setan"],
+                ["神仙", "shénxian", "n. abadi, makhluk gaib"],
+                ["健全", "jiànquán", "adj. sehat, waras"],
+                ["塌", "tā", "v. runtuh, jatuh"],
+                ["反之", "fǎnzhī", "conj, sebaliknya"],
+                ["激素", "jīsù", "n. hormon"],
+                ["转移", "zhuǎnyí", "v. memindahkan"],
+                ["喉咙", "hóulóng", "n. tenggorokan"],
+                ["鼻涕", "bí tì", "n. lendir hidung"],
+                ["之际", "zhījì", "pada kesempatan, selama"],
+                ["修复", "xiūfù", "v. memperbaiki, memulihkan"],
+                ["宣泄", "xuān xiè", "v. untuk mendapatkan st. Dari dada seseorang"],
+                ["许可", "xǔkě", "v. mengizinkan"],
+                ["倡导", "chàngdǎo", "v. menganjurkan, mengusulkan"],
+                ["情理", "qínglǐ", "n. akal, alasan"],
+                ["忌讳", "jìhuì", "v. untuk menghindari sebagai berbahaya"],
+                ["外界", "wàijiè", "n. dunia luar"],
+                ["狭隘", "xiá'ài", "adj. sempit"],
+                ["偏见", "piānjiàn", "n. prasangka, bias"],
+                ["阻挠", "zǔnáo", "v. menghalangi, menggagalkan"],
+                ["尊严", "zūnyán", "n. martabat, kehormatan"],
+                ["理睬", "lǐcǎi", "v. memperhatikan"],
+                ["淹没", "yānméi", "v. menenggelamkan, membanjiri"],
+                ["须知", "xū zhī", "v. orang harus tahu itu, harus dipahami bahwa"],
+                ["抹杀", "mǒshā", "v. melenyapkan, menghapuskan"],
+                ["岁月", "suìyuè", "n. tahun, waktu"],
+                ["沉淀", "chéndiàn", "v. mengendap"]
+            ],
+            33: [
+                ["为期", "wéiqī", "v. untuk jangka waktu"],
+                ["征服", "zhēngfú", "v. menaklukkan"],
+                ["桥梁", "qiáoliáng", "n. menjembatani"],
+                ["平原", "píngyuán", "n. polos"],
+                ["夹杂", "jiāzá", "v. bercampur dengan"],
+                ["呼啸", "hūxiào", "v. mengaum, melolong"],
+                ["宽敞", "kuānchang", "adj. luas"],
+                ["齐全", "qíquán", "adj. menyelesaikan"],
+                ["封闭", "fēngbì", "v. menutup, menyegel"],
+                ["符号", "fúhào", "n. simbol, tanda"],
+                ["喧哗", "xuān huá", "adj. ribut, berisik"],
+                ["不屑一顾", "búxiè-yìgù", "tidak melirik"],
+                ["威风", "wēifēng", "n. panache, bantalan yang menakjubkan"],
+                ["演绎", "yǎn yì", "v. menafsirkan, bertindak"],
+                ["电源", "diànyuán", "n. Sumber Daya listrik"],
+                ["闭塞", "bìsè", "adj. tersumbat, diblokir"],
+                ["久违", "jiǔwéi", "v. lama hilang, lama ditunggu-tunggu"],
+                ["正义", "zhèngyì", "adj. adil, benar"],
+                ["见义勇为", "jiànyì-yǒngwèi", "untuk melakukan dengan berani apa yang benar"],
+                ["洪水", "hóngshuǐ", "n. banjir"],
+                ["英勇", "yīngyǒng", "adj. heroik, berani"],
+                ["贵族", "guìzú", "n. bangsawan"],
+                ["播种", "bōzhòng", "v. menabur"],
+                ["承包", "chéngbāo", "v. berkontraksi (dengan)"],
+                ["方言", "fāngyán", "n. dialog"],
+                ["捣乱", "dǎoluàn", "v. membuat masalah"],
+                ["狼狈", "lángbèi", "adj. dalam kekacauan, dalam posisi yang sulit"],
+                ["幼稚", "yòu zhì", "adj. kekanak-kanakan, naif"],
+                ["双胞胎", "shuāngbāotāi", "n. saudara kembar"],
+                ["家常", "jiācháng", "n. kehidupan sehari-hari keluarga"],
+                ["回顾", "huígù", "v. meninjau, melihat kembali"],
+                ["往事", "wǎngshì", "n. masa lalu"],
+                ["方圆", "fāngyuán", "n. daerah sekitar"],
+                ["爆炸", "bàozhà", "v. meledak"],
+                ["对联", "duìlián", "n. bait"],
+                ["拜年", "bàinián", "v. membayar panggilan tahun baru"],
+                ["天伦之乐", "tiānlún-zhīlè", "kebahagiaan persatuan keluarga"],
+                ["元宵节", "yuán xiāo jié", "n. festival lentera"],
+                ["正月", "zhēngyuè", "n. bulan pertama tahun lunar"],
+                ["寺庙", "sìmiào", "n. Kuil"],
+                ["眼神", "yǎn shén", "n. ekspresi di mata seseorang"],
+                ["新浪", "xīn làng", "n. ruang jembatan"],
+                ["新娘", "xīn niáng", "n. menjembatani"],
+                ["响应", "xiǎngyìng", "v. menanggapi"],
+                ["社区", "shèqū", "n. komunitas, komunitas perumahan"],
+                ["物业", "wù yè", "n. properti, real estat"],
+                ["媳妇", "xífù", "n. istri"],
+                ["贤惠", "xiánhuì", "adj. (dari seorang wanita) berbudi luhur"],
+                ["惊动", "jīngdòng", "v. mengagetkan"],
+                ["现场", "xiànchǎng", "n. situs, tempat"],
+                ["联欢", "liánhuān", "v. berkumpul, berpesta"],
+                ["漫画", "mànhuà", "n. kartun, komik"],
+                ["仓促", "cāngcù", "adj. tergesa-gesa"],
+                ["无拘无束", "wújū-wúshù", "tak terkendali, tak terkekang"],
+                ["拘束", "jūshù", "v. menahan, membatasi"],
+                ["束", "shù", "M. balok"],
+                ["舟", "zhōu", "n. kapal"]
+            ],
+            34: [
+                ["霞", "xiá", "n. cahaya pagi atau sore hari"],
+                ["朴素", "pǔsù", "adj. polos, sederhana"],
+                ["温和", "wēnhé", "adj. lembut"],
+                ["颠簸", "diānbǒ", "v. menabrak, menyentak"],
+                ["巷", "xiàng", "n. jalur"],
+                ["陶瓷", "táocí", "n. tembikar dan porselen"],
+                ["收藏", "shōucáng", "v. mengumpulkan"],
+                ["鉴定", "jiàndìng", "v. mengotentikasi"],
+                ["无偿", "wúcháng", "adj. gratis"],
+                ["赠送", "zèngsòng", "v. memberi sebagai hadiah"],
+                ["络绎不绝", "luòyì-bùjué", "datang dan pergi dalam arus yang berkelanjutan"],
+                ["文物", "wénwù", "n. peninggalan budaya, peninggalan sejarah"],
+                ["同志", "tóngzhì", "n. kawan"],
+                ["打包", "dǎbāo", "v. mengemas"],
+                ["搭配", "dāpèi", "v. untuk mencocokkan"],
+                ["图案", "tú'àn", "n. pola"],
+                ["皇帝", "huángdì", "n. kaisar"],
+                ["皇后", "huánghòu", "n. permaisuri, istri seorang kaisar"],
+                ["销毁", "xiāohuǐ", "v. untuk menghancurkan dengan melelehkan atau membakar"],
+                ["手艺", "shǒuyì", "n. kerajinan tangan"],
+                ["凝聚", "níngjù", "v. mengelompokkan, mewujudkan"],
+                ["结晶", "jiéjīng", "n. kristalisasi, buah, produk"],
+                ["籍贯", "jíguàn", "n. tempat kelahiran atau asal seseorang"],
+                ["采购", "cǎigòu", "n. pembelian"],
+                ["创业", "chuàngyè", "v. untuk memulai usaha atau bisnis, untuk melakukan pekerjaan perintis"],
+                ["威望", "wēiwàng", "n. prestise"],
+                ["吝啬", "línsè", "adj. kikir"],
+                ["尚且", "shàngqiě", "konj. Bahkan"],
+                ["不惜", "bùxī", "v. tidak menyayangkan, tidak keberatan"],
+                ["可观", "kěguān", "adj. besar"],
+                ["神圣", "shénshèng", "adj. suci"],
+                ["使命", "shǐmìng", "n. misi"],
+                ["看待", "kàndài", "v. menganggap, memperlakukan"],
+                ["家属", "jiāshǔ", "n. anggota keluarga"],
+                ["拥护", "yōnghù", "v. untuk mendukung, untuk menegakkan"],
+                ["表彰", "biǎozhāng", "v. memuji, mengutip"],
+                ["荣誉", "róngyù", "n. menghormati"],
+                ["奖励", "jiǎnglì", "v. memberi penghargaan, memberi penghargaan"],
+                ["称号", "chēnghào", "n. judul"],
+                ["争气", "zhēngqì", "v. mencoba membuat pertunjukan yang bagus, mencoba memenangkan kredit, mencoba membawa kredit ke"],
+                ["沾光", "zhān guāng", "v. mendapat manfaat dari pergaulan dengan sb. Atau st."],
+                ["品质", "pǐnzhì", "n. karakter, kualitas"],
+                ["乐意", "lèyì", "v. bersedia"],
+                ["精益求精", "jīngyì-qiújīng", "untuk selalu berusaha untuk melakukan yang lebih baik lagi, untuk terus menyempurnakan keterampilan seseorang"],
+                ["次序", "cìxù", "n. urutan"],
+                ["朝代", "cháodài", "n. dinasti"],
+                ["泛滥", "fànlàn", "v. banjir, meluap"],
+                ["威信", "wēixìn", "n. prestise"],
+                ["当代", "dāngdài", "n. sekarang, kontemporer sebelum"],
+                ["级别", "jíbié", "n. peringkat, tingkat"],
+                ["泰斗", "tàidòu", "n. otoritas terkemuka"]
+            ],
+            35: [
+                ["起源", "qǐyuán", "n. asal, awal"],
+                ["文献", "wénxiàn", "n. dokumen, literatur"],
+                ["凶恶", "xiōngè", "adj. ganas, ganas"],
+                ["揭露", "jiēlù", "v. mengungkap"],
+                ["昌盛", "chāngshèng", "adj. makmur, berkembang"],
+                ["题材", "tícái", "n. subjek, tema"],
+                ["驱逐", "qūzhú", "v. mengusir, mengusir"],
+                ["吉祥", "jíxiáng", "adj. beruntung, menguntungkan"],
+                ["里程碑", "lǐchéngbēi", "n. tonggak pencapaian"],
+                ["墨水儿", "mòshuǐ ér", "n. tinta"],
+                ["盖章", "gàizhāng", "menyegel, mencap"],
+                ["联想", "liánxiǎng", "v. mengasosiasikan, menghubungkan dalam pikiran"],
+                ["涂抹", "túmò", "v. melukis, memulaskan"],
+                ["终究", "zhōngjiū", "adv. Akhirnya, pada akhirnya, bagaimanapun juga"],
+                ["烟花爆竹", "yānhuā bàozhú", "kembang api, petasan"],
+                ["寄托", "jìtuō", "v. menempatkan (harapan, dll.) pada"],
+                ["增添", "zēngtiān", "v. menambahkan"],
+                ["丰收", "fēngshōu", "v. mendapatkan panen raya"],
+                ["发财", "fācái", "v.mendapatkan kekayaan"],
+                ["连年", "liánnián", "v. dalam tahun-tahun berturut-turut, dalam tahun-tahun berturut-turut"],
+                ["寓言", "yù yán", "n. fabel, alegori, perumpamaan"],
+                ["信仰", "xìnyǎng", "n. iman, kepercayaan"],
+                ["喜闻乐见", "xǐwén-lèjiàn", "senang melihat dan mendengar, senang mendengar dan melihat"],
+                ["神奇", "shénqí", "adj. mengesankan, perkasa"],
+                ["翘", "qiào", "v. mengangkat (kepala, ekor, dll.)"],
+                ["神态", "shéntài", "n. ekspresi, cara, mien"],
+                ["盛开", "shèngkāi", "v. mekar penuh"],
+                ["散发", "sànfā", "v. mengirimkan, mengeluarkan"],
+                ["耸", "sǒng", "v. mengangkat bahu"],
+                ["州", "zhōu", "n. prefektur"],
+                ["外行", "wàiháng", "n. orang awam, orang luar"],
+                ["推销", "tuīxiāo", "v. untuk mempromosikan penjualan"],
+                ["吞吞吐吐", "tūntūn-tǔtǔ", "untuk bergumam dan bergumam, terputus-putus beberapa kata"],
+                ["残次品", "cán cìpǐn", "produk rusak atau cacat"],
+                ["现成", "xiàn chéng", "adj. siap pakai"],
+                ["谢绝", "xièjué", "v. menolak"],
+                ["故乡", "gùxiāng", "n. kampung halaman"],
+                ["扎实", "zhāshi", "adj. padat, suara"],
+                ["塑造", "sùzào", "v. menggambarkan"],
+                ["手法", "shǒufǎ", "n. keterampilan, teknik"],
+                ["派别", "pàibié", "n. faksi, sekolah"],
+                ["借鉴", "jièjiàn", "v. digunakan untuk referensi, mengambil pelajaran dari"],
+                ["再接再厉", "zàijiē-zàilì", "untuk melakukan upaya yang gigih"],
+                ["心得", "xīn de", "n. apa yang telah dipelajari dari pekerjaan, studi, dll"],
+                ["缺席", "quēxí", "v. tidak hadir (dari rapat, dll)"],
+                ["干劲", "gànjìn", "n. semangat, energi"],
+                ["占据", "zhànjù", "v. menduduki, mengambil alih"],
+                ["确立", "quèlì", "v. menetapkan"],
+                ["信念", "xìnniàn", "n. iman, kepercayaan"],
+                ["任重道远", "rènzhòng-dàoyuǎn", "itu adalah tugas yang berat dan jalannya panjang;  mengambil beban berat dan memulai jalan yang panjang"],
+                ["一帆风顺", "yīfān-fēngshùn", "semuanya berjalan lancar; pergi dengan lancar, memiliki angin yang baik sepanjang jalan"]
+            ],
+            36: [
+                ["官方", "guānfāng", "n. otoritas, dari atau oleh pemerintah"],
+                ["层出不穷", "céngchū-bùqióng", "muncul dalam aliran tanpa akhir, terus berlanjut tanpa akhir, keluar dalam aliran tanpa akhir"],
+                ["命名", "mìngmíng", "v. memberi nama"],
+                ["规章", "guīzhāng", "n. peraturan"],
+                ["截止", "jiézhǐ", "v. sampai"],
+                ["终止", "zhōngzhǐ", "v. menghentikan, mengakhiri"],
+                ["完备", "wánbèi", "adj. menyelesaikan"],
+                ["立足", "lìzú", "v. mendasarkan"],
+                ["灵魂", "línghún", "n. jiwa, semangat"],
+                ["颁布", "bānbù", "v. mengumumkan, mengeluarkan"],
+                ["品德", "pǐndé", "n. karakter moral"],
+                ["过失", "guòshī", "n. kesalahan"],
+                ["无耻", "wúchǐ", "adj. tak tahu malu, kurang ajar"],
+                ["容纳", "róngnà", "v. menahan, menerima"],
+                ["透露", "tòulù", "v. mengungkapkan"],
+                ["治理", "zhìlǐ", "mengelola, , memerintah"],
+                ["树立", "shùlì", "v. mengatur, membangun"],
+                ["正气", "zhèngqì", "n. suasana sehat"],
+                ["唾弃", "tuòqì", "v. menyingkirkan"],
+                ["卑鄙", "bēibǐ", "adj. berarti, tercela"],
+                ["堕落", "duòluò", "v. merosot, jatuh, rusak"],
+                ["腐败", "fǔbài", "adj. korup, busuk"],
+                ["崇高", "chónggāo", "adj. tinggi, luhur"],
+                ["境界", "jìngjiè", "n. negara, alam"],
+                ["攀登", "pāndēng", "v. memanjat"],
+                ["窍门", "qiàomén", "n. trik, kepiawaian"],
+                ["发扬", "fāyáng", "v. mengembangkan, memajukan, meneruskan"],
+                ["敞开", "chǎngkāi", "v. membuka lebar"],
+                ["招收", "zhāoshōu", "v. merekrut, mendaftarkan, menerima"],
+                ["开明", "kāimíng", "adj. cerdas, liberal, berpikiran terbuka"],
+                ["倡议", "chàngyì", "v. mengusulkan, menganjurkan"],
+                ["杜绝", "dùjué", "v. membasmi sepenuhnya, mengakhiri"],
+                ["干涉", "gānshè", "v. mengintervensi"],
+                ["过问", "guòwèn", "v. mempermasalahkan, mempedulikan diri sendiri dengan"],
+                ["激发", "jīfā", "v. membangkitkan, merangsang"],
+                ["多元化", "duōyuánhuà", "adj. beragam, pluralistik"],
+                ["开展", "kāizhǎn", "v. melaksanakan, meluncurkan"],
+                ["对立", "duìlì", "v. menentang"],
+                ["分歧", "fēnqí", "n. perbedaan"],
+                ["保守", "bǎoshǒu", "adj. konservatif"],
+                ["较量", "jiàoliàng", "v. untuk mengukur kekuatan seseorang, untuk mengadakan kontes"],
+                ["论坛", "lùntán", "n. forum"],
+                ["激励", "jīlì", "v. mendorong, menginspirasi"],
+                ["礼节", "lǐjié", "n. sopan santun, tata krama"],
+                ["衷心", "zhōngxīn", "adj. sepenuh hati, sepenuh hati"],
+                ["爱戴", "àidài", "v. mencintai dan menghargai"],
+                ["示范", "shìfàn", "v. memberi contoh, mendemonstrasikan"],
+                ["崇敬", "chóngjìng", "v. menghargai, menghormati"],
+                ["偶像", "ǒuxiàng", "n. idola, ikon"],
+                ["封建", "fēngjiàn", "n. feodalisme"]
+            ],
+            37: [
+                ["化妆", "huàzhuāng", "v. merias wajah"],
+                ["屑", "xiè", "n. sisa, remah-remah"],
+                ["抢劫", "qiǎngjié", "v. merampok"],
+                ["痕迹", "hénjì", "n. tandai, jejak"],
+                ["停顿", "tíngdùn", "v. menghentikan, menjeda"],
+                ["嫌疑", "xián yí", "n. kecurigaan"],
+                ["线索", "xiànsuǒ", "n. petunjuk, benang"],
+                ["歹徒", "dǎitú", "n. gangster, penjahat"],
+                ["恐惧", "kǒngjù", "adj. takut"],
+                ["铜", "tóng", "n. tembaga"],
+                ["框架", "kuàngjià", "n. bingkai"],
+                ["残留", "cánliú", "v. tetap, tertinggal"],
+                ["形事", "xíngshì", "adj. kriminal, hukuman"],
+                ["监狱", "jiānyù", "n. penjara"],
+                ["慎重", "shènzhòng", "adj. hati-hati, bijaksana"],
+                ["麻痹", "mábì", "adj. mengendurkan kewaspadaan, menurunkan kewaspadaan"],
+                ["失误", "shīwù", "n. kesalahan, tergelincir"],
+                ["考验", "kǎoyàn", "v. menguji"],
+                ["检验", "jiǎnyàn", "v. memeriksa"],
+                ["查货", "chá huò", "v. memburu dan merebut, melacak"],
+                ["制裁", "zhìcái", "v. memberi sanksi, menghukum"],
+                ["公安局", "gōngānjú", "n. biro keamanan publik, kantor polisi"],
+                ["情报", "qíngbào", "n. intelijen, informasi"],
+                ["毒品", "dúpǐn", "n. narkoba, narkotika"],
+                ["带领", "dàilǐng", "v. memimpin"],
+                ["沉着", "chénzhe", "adj. tenang, mantap"],
+                ["暂且", "zàn qiě", "adv. Untuk saat ini"],
+                ["部署", "bùshǔ", "v. mengatur, memetakan"],
+                ["埋伏", "máifú", "v. menyergap, berbaring menunggu, berbohong dalam penyergapan"],
+                ["布置", "bùzhì", "v. mengatur, memperbaiki"],
+                ["反抗", "fǎnkàng", "v. memberontak, melawan, bereaksi"],
+                ["逮捕", "dàibǔ", "v. menangkap"],
+                ["非法", "fēifǎ", "adj. liar / melawan hukum"],
+                ["贩卖", "fànmài", "v. menjual, lalu lintas"],
+                ["平面", "píngmiàn", "n. bidang, permukaan datar"],
+                ["平行", "píngxíng", "v. sejajar"],
+                ["并列", "bìngliè", "v. berdiri berdampingan"],
+                ["交叉", "jiāochā", "v. berpotongan, bersilangan"],
+                ["包袱", "bāofu", "n. beban"],
+                ["胆怯", "dǎnqiè", "adj. penakut, pengecut"],
+                ["哄", "hǒng", "v. membujuk, humor"],
+                ["信赖", "xìnlài", "v. mempercayai"],
+                ["忠诚", "zhōngchéng", "adj. setia"],
+                ["舌头", "shétou", "n. lidah"],
+                ["舔", "tiǎn", "v. menjilat"],
+                ["空隙", "kòngxì", "n. celah"],
+                ["扒", "bā", "v. mendorong ke samping"],
+                ["垫", "diàn", "n. alas, bantal, tikar"],
+                ["叼", "diāo", "v. menahan di mulut"],
+                ["粉末", "fěnmò", "n. bubuk"],
+                ["口腔", "kǒuqiāng", "n. rongga mulut"]
+            ],
+            38: [
+                ["屡次", "lǚcì", "adv. Berkali-kali, berulang kali"],
+                ["依据", "yījù", "persiapan. Berdasarkan"],
+                ["罐", "guàn", "n. kaleng , timah"],
+                ["数额", "shù'é", "n. jumlah"],
+                ["永恒", "yǒng héng", "adj. abadi"],
+                ["遵循", "zūnxún", "v. mengikuti, mematuhi"],
+                ["不屑", "búxiè", "v. berpikir st. Tidak layak dilakukan"],
+                ["孕育", "yùnyù", "v. mengandung, berkembang biak"],
+                ["博览会", "bólǎnhuì", "n. eksposisi"],
+                ["耐用", "naiyòng", "adj. tahan lama"],
+                ["魔术", "móshù", "n. sihir"],
+                ["扣", "kòu", "v. mengurangi, diskon, mengambil…. Mati..."],
+                ["季度", "jìdù", "n. seperempat (tahun"],
+                ["本钱", "běnqian", "n. modal, uang bibit"],
+                ["通货膨胀", "tōnghuò péngzhàng", "inflasi"],
+                ["平庸", "píngyōng", "adj. biasa-biasa saja"],
+                ["捏", "niē", "v. memegang di antara jari-jari untuk mencubit"],
+                ["环节", "huánjié", "n. tautan, segmen"],
+                ["兴旺", "xīngwàng", "adj. makmur, berkembang"],
+                ["垄断", "lǒngduàn", "v. memonopoli"],
+                ["扩充", "kuòchōng", "v.memperluas"],
+                ["掏", "tāo", "v. mengeluarkan"],
+                ["布局", "bùjú", "v. menata"],
+                ["拟定", "nǐdìng", "v. menyusun, berolahraga"],
+                ["策略", "cèlüè", "n. taktik. Strategi"],
+                ["咀嚼", "jǔjué", "v. mengunyah"],
+                ["可口", "kěkǒu", "adj. enak"],
+                ["物美价廉", "wùměi-jiàlián", "murah dan bagus"],
+                ["风味", "fēngwèi", "n. rasa"],
+                ["吹捧", "chuīpěng", "v. menyanjung, menggembar-gemborkan"],
+                ["品尝", "pǐncháng", "v. secukupnya"],
+                ["踊跃", "yǒngyuè", "adj. bersemangat, aktif"],
+                ["井", "jǐng", "n. sumur"],
+                ["财务", "cáiwù", "n. keuangan"],
+                ["局部", "júbù", "n. bagian"],
+                ["关照", "guānzhào", "v. menjaga, mengawasi"],
+                ["观光", "guānguāng", "v. pergi jalan-jalan"],
+                ["就近", "jiùjìn", "adv. (untuk melakukan atau mendapatkan sth.) di dekatnya, di lingkungan itu"],
+                ["肖像", "xiào xiàng", "n. potret"],
+                ["防治", "fángzhì", "v. berputar dan menenun"],
+                ["留念", "liúniàn", "v. menerima/menyimpan sebagai suvenir"],
+                ["对照", "duìzhào", "v. mengingat,  membandingkan"],
+                ["齐心协力", "qíxīn-xiélì", "melakukan upaya bersama, menjadi satu pikiran, mengarahkan upaya mereka ke satu arah"],
+                ["专长", "zhuānchǎng", "n. spesialisasi"],
+                ["资本", "zīběn", "n. modal"],
+                ["以往", "yǐwǎng", "n. sebelumnya"],
+                ["淡季", "dànjì", "n. musim sepi, bukan musimnya"],
+                ["制服", "zhìfú", "n. seragam"],
+                ["规格", "guīgé", "n. standar, norma"],
+                ["递增", "dìzēng", "v. meningkat secara progresif"],
+                ["周期", "zhōuqī", "n. periode, siklus"],
+                ["赌博", "dǔbó", "v. berjudi"],
+                ["空想", "kōngxiǎng", "v. melamun"]
+            ],
+            39: [
+                ["日新月异", "rìxīn-yuèyì", "berubah dengan cepat, berubah dari hari ke hari"],
+                ["沉闷", "chénmèn", "adj. menyedihkan, membosankan"],
+                ["充实", "chōngshí", "adj. cerah, kaya"],
+                ["交易", "jiāoyì", "v. berbisnis, berdagang"],
+                ["任意", "rènyì", "adv. Sewenang-wenang, dengan sengaja"],
+                ["乐趣", "lèqù", "n. kesenangan, kegembiraan"],
+                ["设立", "shèlì", "v. mendirikan"],
+                ["虚荣", "xū róng", "n. kesombongan"],
+                ["珍贵", "zhēnguì", "adj. berharga"],
+                ["合伙", "héhuǒ", "v. membentuk kemitraan"],
+                ["筹备", "chóubèi", "v. mempersiapkan"],
+                ["成员", "chéngyuán", "n. anggota"],
+                ["初步", "chūbù", "adj. awal, pendahuluan"],
+                ["合算", "hésuàn", "adj. bermanfaat"],
+                ["渠道", "qúdào", "n. saluran, media komunikasi"],
+                ["审查", "shěnchá", "v. memeriksa"],
+                ["缴纳", "jiǎonà", "v. membayar"],
+                ["摸索", "mōsuo", "v. meraba-raba"],
+                ["层次", "céngcì", "n. tingkat, lapisan"],
+                ["阶层", "jiēcéng", "n. strata, pangkat"],
+                ["政策", "zhèngcè", "n. aturan"],
+                ["欢乐", "huānlè", "adj. senang, gembira"],
+                ["上瘾", "shàngyǐn", "v. kecanduan (untuk sth.) untuk masuk ke dalam kebiasaan (melakukan sth.)"],
+                ["慈善", "císhàn", "adj. sosial"],
+                ["股份", "gǔfèn", "n. berbagi, stok"],
+                ["股东", "gǔdōng", "n. pemegang saham"],
+                ["钞票", "chāopiào", "n. uang kertas"],
+                ["苦尽甘来", "kǔjìn-gānlai", "semua. Penderitaan ada balasannya, setelah penderitaan datang kebahagiaan"],
+                ["尴尬", "gāngà", "adj. canggung"],
+                ["抛弃", "pāoqì", "v.meninggalkan, mengesampingkan"],
+                ["坦白", "tǎnbái", "adj. jujur"],
+                ["急功近利", "jígōng-jìnlì", "ingin cepat mencapai kesuksesan dan mendapatkan manfaat instan"],
+                ["进展", "jìnzhǎn", "v. untuk membuat kemajuan"],
+                ["牢骚", "láosāo", "n. menggerutu, mengeluh"],
+                ["迄今为止", "qìjīn wéizhǐ", "sejauh ini, hingga sekarang"],
+                ["吃力", "chīlì", "adj. berat, melelahkan"],
+                ["家喻户晓", "jiāyù-hùxiǎo", "untuk diketahui setiap rumah tangga"],
+                ["无穷无尽", "wúqióng-wújìn", "tak habis-habisnya, tak terbatas, tak berujung, dari abadi ke abadi"],
+                ["罪犯", "zuìfàn", "n. kriminal, pelanggar"],
+                ["盗窃", "dàoqiè", "v. mencuri"],
+                ["公然", "gōngrán", "adv. Secara terbuka, tanpa penyamaran"],
+                ["冒充", "màochōng", "v. berpura-pura menjadi"],
+                ["大肆", "dàsì", "adv. Tanpa pengekangan sembarangan"],
+                ["诈骗", "zhàpiàn", "v. menipu"],
+                ["拘留", "jūliú", "v. menahan"],
+                ["败坏", "bàihuài", "v. merusak"],
+                ["名誉", "míngyù", "n. ketenaran, reputasi"],
+                ["曝光", "biàoguāng", "v. mengekspos"]
+            ],
+            40: [
+                ["引用", "yǐnyòng", "v. mengutip"],
+                ["截止", "jiézhǐ", "v. dengan (waktu tertentu), sampai dengan"],
+                ["力争", "lìzhēng", "v. bekerja keras untuk, berusaha untuk"],
+                ["亚军", "yàjūn", "n. tempat kedua, runner-up, medali perak"],
+                ["季军", "jì jūn", "n. juara ketiga, runner-up kedua"],
+                ["极限", "jíxiàn", "n. batas, maksimum, ekstremitas"],
+                ["狭窄", "xiázhǎi", "adj. sempit"],
+                ["任性", "rènxìng", "adj. berubah-ubah, berkemauan sendiri"],
+                ["田径", "tiánjìng", "n. trek dan lapangan"],
+                ["选手", "xuǎnshǒu", "n. atlet yang dipilih untuk pertemuan olahraga, kompetisi"],
+                ["同胞", "tóngbāo", "n. sesama sebangsa, sebangsa"],
+                ["直播", "zhíbō", "v. disiarkan langsung"],
+                ["旗帜", "qízhì", "n. bendera"],
+                ["领先", "lǐngxiān", "v. memimpin, (mengambil) memimpin"],
+                ["分解", "fēnjiě", "v. terurai"],
+                ["公式", "gōngshì", "n. rumus"],
+                ["精密", "jīngmì", "adj. tepat, akurat"],
+                ["悬殊", "xuánshū", "adj. dengan perbedaan besar, dengan kesenjangan yang lebar"],
+                ["迷信", "míxìn", "v. memiliki keyakinan buta dalam"],
+                ["舆论", "yúlùn", "n. opini publik"],
+                ["自发", "zìfā", "adj. spontan"],
+                ["掀起", "xiānqǐ", "v. memulai, berangkat, mengaduk"],
+                ["空洞", "kōngdòng", "adj. kosong, hampa, tanpa isi"],
+                ["制约", "zhìyuē", "v. membatasi"],
+                ["原理", "yuánlǐ", "n. prinsip"],
+                ["冷库", "lěngkù", "adj. tidak berperasaan, tidak berperasaan, suram"],
+                ["动员", "dòngyuán", "v. menggerakkan, membangkitkan"],
+                ["牵扯", "qiānchě", "v. melibatkan"],
+                ["胸膛", "xiōng táng", "n. payudara, dada"],
+                ["管辖", "guǎnxiá", "v. memerintah"],
+                ["故障", "gùzhàng", "n. kerusakan"],
+                ["严禁", "yánjìn", "v. melarang keras"],
+                ["猝死", "cù sǐ", "v. mati mendadak"],
+                ["正规", "zhèngguī", "adj. biasa, standar"],
+                ["演习", "yǎnxí", "v. bermanuver, berolahraga, mengebor"],
+                ["弹性", "tánxìng", "n. elastisitas, ketahanan"],
+                ["竞赛", "jìngsài", "v. mengadakan kontes"],
+                ["优先", "yōuxiān", "v. didahulukan, diprioritaskan"],
+                ["选拔", "xuǎnbá", "v. memilih"],
+                ["资产", "zīchǎn", "n. properti, aset"],
+                ["得天独厚", "détiān-dúhòu", "menjadi kaya secara alami, berlimpah dalam hadiah atau alam, memiliki kondisi alam yang sangat menguntungkan"],
+                ["作风", "zuòfēng", "n. gaya, gaya kerja, cara"],
+                ["顽强", "wánqiáng", "adj. gigih, ulet"],
+                ["志气", "zhìqì", "n. aspirasi, ambisi, moral"],
+                ["屈服", "qūfú", "v. menyerah, menyerah, tunduk"],
+                ["相辅相成", "xiāngfǔ-xiāngchéng", "hidup berdampingan dan berperan bersama-sama, saling berhubungan tak terpisahkan, saling melengkapi satu sama lain"],
+                ["依托", "yītuō", "v. mengandalkan, bergantung pada"],
+                ["装备", "zhuāngbèi", "v. dilengkapi dengan"],
+                ["战术", "zhànshù", "n. taktik"],
+                ["悬崖峭壁", "xuányá-qiàobì", "permukaan batu terjal dan tebing terjal, tebing terjal dan bebatuan menjorok"],
+                ["涌现", "yǒngxiàn", "v. muncul dalam jumlah besar, bermunculan"]
+            ]
+        };
+
+        let currentLesson = 21;
+
+        function renderTabs() {
+            const tabsContainer = document.getElementById('tabs-container');
+            tabsContainer.innerHTML = '';
+            
+            const allButton = document.createElement('button');
+            allButton.className = `tab-button px-6 py-3 rounded-lg font-semibold transition-all ${
+                viewMode === 'all' 
+                    ? 'active text-white' 
+                    : 'text-white hover:bg-white hover:bg-opacity-30'
+            }`;
+            allButton.textContent = 'All Lessons';
+            allButton.style.backgroundColor = viewMode === 'all' ? (window.elementSdk?.config?.primary_action_color || defaultConfig.primary_action_color) : 'transparent';
+            
+            allButton.addEventListener('click', () => {
+                viewMode = 'all';
+                renderTabs();
+                renderAllLessons();
+            });
+            
+            tabsContainer.appendChild(allButton);
+            
+            for (let i = 21; i <= 40; i++) {
+                const button = document.createElement('button');
+                button.className = `tab-button px-6 py-3 rounded-lg font-semibold transition-all ${
+                    viewMode === 'individual' && currentLesson === i 
+                        ? 'active text-white' 
+                        : 'text-white hover:bg-white hover:bg-opacity-30'
+                }`;
+                const lessonLabel = window.elementSdk?.config?.lesson_label || defaultConfig.lesson_label;
+                button.textContent = `${lessonLabel} ${i}`;
+                button.style.backgroundColor = (viewMode === 'individual' && currentLesson === i) ? (window.elementSdk?.config?.primary_action_color || defaultConfig.primary_action_color) : 'transparent';
+                
+                button.addEventListener('click', () => {
+                    viewMode = 'individual';
+                    currentLesson = i;
+                    renderTabs();
+                    renderVocabulary();
+                });
+                
+                tabsContainer.appendChild(button);
+            }
+        }
+
+        function matchesSearch(item, query) {
+            if (!query) return true;
+            const lowerQuery = query.toLowerCase();
+            return item[0].toLowerCase().includes(lowerQuery) || 
+                   item[1].toLowerCase().includes(lowerQuery) || 
+                   item[2].toLowerCase().includes(lowerQuery);
+        }
+
+        function renderVocabulary() {
+            const tbody = document.getElementById('vocab-tbody');
+            tbody.innerHTML = '';
+            
+            const vocab = vocabData[currentLesson] || [];
+            const textColor = window.elementSdk?.config?.text_color || defaultConfig.text_color;
+            const baseSize = window.elementSdk?.config?.font_size || defaultConfig.font_size;
+            const fontFamily = window.elementSdk?.config?.font_family || defaultConfig.font_family;
+            
+            const filteredVocab = searchQuery ? vocab.filter(item => matchesSearch(item, searchQuery)) : vocab;
+            
+            updateSearchCount(filteredVocab.length, vocab.length);
+            
+            if (filteredVocab.length === 0) {
+                const emptyRow = document.createElement('tr');
+                const emptyCell = document.createElement('td');
+                emptyCell.colSpan = 4;
+                emptyCell.className = 'px-6 py-12 text-center';
+                emptyCell.textContent = 'Tidak ada hasil ditemukan';
+                emptyCell.style.color = textColor;
+                emptyCell.style.fontSize = `${baseSize}px`;
+                emptyCell.style.fontFamily = `${fontFamily}, system-ui, sans-serif`;
+                emptyRow.appendChild(emptyCell);
+                tbody.appendChild(emptyRow);
+                return;
+            }
+            
+            filteredVocab.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.className = 'vocab-row border-b border-gray-200';
+                row.style.fontFamily = `${fontFamily}, system-ui, sans-serif`;
+                
+                const cells = [
+                    vocab.indexOf(item) + 1,
+                    item[0],
+                    item[1],
+                    item[2]
+                ];
+                
+                cells.forEach((cellData, cellIndex) => {
+                    const cell = document.createElement('td');
+                    cell.className = 'px-6 py-4';
+                    cell.textContent = cellData;
+                    cell.style.color = textColor;
+                    
+                    if (cellIndex === 0) {
+                        cell.style.fontSize = `${baseSize * 0.9}px`;
+                        cell.style.fontWeight = '600';
+                    } else if (cellIndex === 1) {
+                        cell.style.fontSize = `${baseSize * 1.1}px`;
+                        cell.style.fontWeight = '700';
+                        cell.style.fontFamily = 'SimSun, STSong, "Microsoft YaHei", serif';
+                        cell.style.color = '#dc2626';
+                    } else {
+                        cell.style.fontSize = `${baseSize}px`;
+                    }
+                    
+                    row.appendChild(cell);
+                });
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderAllLessons() {
+            const tbody = document.getElementById('vocab-tbody');
+            tbody.innerHTML = '';
+            
+            const textColor = window.elementSdk?.config?.text_color || defaultConfig.text_color;
+            const baseSize = window.elementSdk?.config?.font_size || defaultConfig.font_size;
+            const fontFamily = window.elementSdk?.config?.font_family || defaultConfig.font_family;
+            const lessonLabel = window.elementSdk?.config?.lesson_label || defaultConfig.lesson_label;
+            
+            let globalIndex = 1;
+            let totalFiltered = 0;
+            let totalVocab = 0;
+            
+            for (let lessonNum = 21; lessonNum <= 40; lessonNum++) {
+                const vocab = vocabData[lessonNum] || [];
+                totalVocab += vocab.length;
+                const filteredVocab = searchQuery ? vocab.filter(item => matchesSearch(item, searchQuery)) : vocab;
+                totalFiltered += filteredVocab.length;
+                
+                if (filteredVocab.length === 0) continue;
+                
+                const headerRow = document.createElement('tr');
+                headerRow.className = 'border-b-2 border-gray-400';
+                headerRow.style.fontFamily = `${fontFamily}, system-ui, sans-serif`;
+                
+                const headerCell = document.createElement('td');
+                headerCell.colSpan = 4;
+                headerCell.className = 'px-6 py-4 font-bold text-center';
+                headerCell.textContent = `${lessonLabel} ${lessonNum}`;
+                headerCell.style.fontSize = `${baseSize * 1.2}px`;
+                headerCell.style.color = window.elementSdk?.config?.primary_action_color || defaultConfig.primary_action_color;
+                headerCell.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+                
+                headerRow.appendChild(headerCell);
+                tbody.appendChild(headerRow);
+                
+                filteredVocab.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    row.className = 'vocab-row border-b border-gray-200';
+                    row.style.fontFamily = `${fontFamily}, system-ui, sans-serif`;
+                    
+                    const cells = [
+                        vocab.indexOf(item) + 1,
+                        item[0],
+                        item[1],
+                        item[2]
+                    ];
+                    
+                    cells.forEach((cellData, cellIndex) => {
+                        const cell = document.createElement('td');
+                        cell.className = 'px-6 py-4';
+                        cell.textContent = cellData;
+                        cell.style.color = textColor;
+                        
+                        if (cellIndex === 0) {
+                            cell.style.fontSize = `${baseSize * 0.9}px`;
+                            cell.style.fontWeight = '600';
+                        } else if (cellIndex === 1) {
+                            cell.style.fontSize = `${baseSize * 1.1}px`;
+                            cell.style.fontWeight = '700';
+                            cell.style.fontFamily = 'SimSun, STSong, "Microsoft YaHei", serif';
+                            cell.style.color = '#dc2626';
+                        } else {
+                            cell.style.fontSize = `${baseSize}px`;
+                        }
+                        
+                        row.appendChild(cell);
+                    });
+                    
+                    tbody.appendChild(row);
+                });
+            }
+            
+            updateSearchCount(totalFiltered, totalVocab);
+            
+            if (totalFiltered === 0) {
+                const emptyRow = document.createElement('tr');
+                const emptyCell = document.createElement('td');
+                emptyCell.colSpan = 4;
+                emptyCell.className = 'px-6 py-12 text-center';
+                emptyCell.textContent = 'Tidak ada hasil ditemukan';
+                emptyCell.style.color = textColor;
+                emptyCell.style.fontSize = `${baseSize}px`;
+                emptyCell.style.fontFamily = `${fontFamily}, system-ui, sans-serif`;
+                emptyRow.appendChild(emptyCell);
+                tbody.appendChild(emptyRow);
+            }
+        }
+        
+        function updateSearchCount(filtered, total) {
+            const countElement = document.getElementById('search-results-count');
+            if (searchQuery) {
+                countElement.textContent = `Menampilkan ${filtered} dari ${total} kosakata`;
+                countElement.style.opacity = '1';
+            } else {
+                countElement.style.opacity = '0';
+            }
+        }
+
+        async function onConfigChange(config) {
+            const title = document.getElementById('main-title');
+            const colNumber = document.getElementById('col-number');
+            const colCharacter = document.getElementById('col-character');
+            const colPinyin = document.getElementById('col-pinyin');
+            const colMeaning = document.getElementById('col-meaning');
+            
+            const appTitle = config.app_title || defaultConfig.app_title;
+            const columnNumber = config.column_number || defaultConfig.column_number;
+            const columnCharacter = config.column_character || defaultConfig.column_character;
+            const columnPinyin = config.column_pinyin || defaultConfig.column_pinyin;
+            const columnMeaning = config.column_meaning || defaultConfig.column_meaning;
+            const backgroundColor = config.background_color || defaultConfig.background_color;
+            const primaryActionColor = config.primary_action_color || defaultConfig.primary_action_color;
+            const baseSize = config.font_size || defaultConfig.font_size;
+            const fontFamily = config.font_family || defaultConfig.font_family;
+            
+            title.textContent = appTitle;
+            title.style.fontSize = `${baseSize * 2}px`;
+            title.style.fontFamily = `${fontFamily}, system-ui, sans-serif`;
+            
+            colNumber.textContent = columnNumber;
+            colCharacter.textContent = columnCharacter;
+            colPinyin.textContent = columnPinyin;
+            colMeaning.textContent = columnMeaning;
+            
+            const headerCells = [colNumber, colCharacter, colPinyin, colMeaning];
+            headerCells.forEach(cell => {
+                cell.style.fontSize = `${baseSize * 0.9}px`;
+                cell.style.fontFamily = `${fontFamily}, system-ui, sans-serif`;
+            });
+            
+            document.querySelector('.min-h-full').style.background = `linear-gradient(135deg, ${backgroundColor} 0%, ${primaryActionColor} 100%)`;
+            
+            const activeTab = document.querySelector('.tab-button.active');
+            if (activeTab) {
+                activeTab.style.backgroundColor = primaryActionColor;
+            }
+            
+            const tableHeader = document.querySelector('thead tr');
+            if (tableHeader) {
+                tableHeader.style.background = `linear-gradient(135deg, ${backgroundColor} 0%, ${primaryActionColor} 100%)`;
+            }
+            
+            if (viewMode === 'all') {
+                renderAllLessons();
+            } else {
+                renderVocabulary();
+            }
+            renderTabs();
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities: (config) => ({
+                    recolorables: [
+                        {
+                            get: () => config.background_color || defaultConfig.background_color,
+                            set: (value) => {
+                                config.background_color = value;
+                                window.elementSdk.setConfig({ background_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.surface_color || defaultConfig.surface_color,
+                            set: (value) => {
+                                config.surface_color = value;
+                                window.elementSdk.setConfig({ surface_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.text_color || defaultConfig.text_color,
+                            set: (value) => {
+                                config.text_color = value;
+                                window.elementSdk.setConfig({ text_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                            set: (value) => {
+                                config.primary_action_color = value;
+                                window.elementSdk.setConfig({ primary_action_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+                            set: (value) => {
+                                config.secondary_action_color = value;
+                                window.elementSdk.setConfig({ secondary_action_color: value });
+                            }
+                        }
+                    ],
+                    borderables: [],
+                    fontEditable: {
+                        get: () => config.font_family || defaultConfig.font_family,
+                        set: (value) => {
+                            config.font_family = value;
+                            window.elementSdk.setConfig({ font_family: value });
+                        }
+                    },
+                    fontSizeable: {
+                        get: () => config.font_size || defaultConfig.font_size,
+                        set: (value) => {
+                            config.font_size = value;
+                            window.elementSdk.setConfig({ font_size: value });
+                        }
+                    }
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["app_title", config.app_title || defaultConfig.app_title],
+                    ["lesson_label", config.lesson_label || defaultConfig.lesson_label],
+                    ["column_number", config.column_number || defaultConfig.column_number],
+                    ["column_character", config.column_character || defaultConfig.column_character],
+                    ["column_pinyin", config.column_pinyin || defaultConfig.column_pinyin],
+                    ["column_meaning", config.column_meaning || defaultConfig.column_meaning]
+                ])
+            });
+        }
+
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.trim();
+            if (viewMode === 'all') {
+                renderAllLessons();
+            } else {
+                renderVocabulary();
+            }
+        });
+
+        renderTabs();
+        renderVocabulary();
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9afd48a9e36734ae',t:'MTc2NjA0NjQ3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
